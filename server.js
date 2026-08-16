@@ -33,4 +33,16 @@ app.post("/unlock", async (req, res) => {
   }
 });
 
+// New GET endpoint (token in query string, for browser-URL convenience)
+app.get("/unlock", async (req, res) => {
+  if (req.query.token !== process.env.PROXY_AUTH_TOKEN) {
+    return res.status(401).json({ error: "unauthorized" });
+  }
+  try {
+    res.json(await triggerUnlock());
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 app.listen(3000, () => console.log("door-proxy listening on :3000"));
