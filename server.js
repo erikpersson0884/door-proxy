@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const path = require("path");
 const app = express();
 
-const ENVS = ["UNLOCK_URL", "DOORS", "APP_PASSWORD", "SESSION_SECRET"];
+const ENVS = ["UNLOCK_URL", "DOORS", "APP_PASSWORD", "SESSION_SECRET", "NODE_ENV"];
 for (const env of ENVS) {
   if (!process.env[env]) {
     console.error(`Missing required environment variable: ${env}`);
@@ -15,6 +15,7 @@ for (const env of ENVS) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set("trust proxy", 1);
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -22,7 +23,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-      secure: process.env.NODE_ENV.toLowerCase() === "production",
+      secure: (process.env.NODE_ENV || "").toLowerCase() === "production",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   },
 }));
