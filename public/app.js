@@ -26,6 +26,7 @@ async function openDoor(doorId, btn) {
   status.textContent = "";
 
   try {
+    status.textContent = "Sending request...";
     const r = await fetch(`/trigger/${doorId}`, { method: "POST" });
     const data = await r.json();
 
