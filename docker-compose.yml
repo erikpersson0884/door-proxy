@@ -8,6 +8,7 @@ services:
       - DOORS=${DOORS}
       - APP_PASSWORD=${APP_PASSWORD}
       - SESSION_SECRET=${SESSION_SECRET}
+      - NODE_ENV=${NODE_ENV}
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web"
