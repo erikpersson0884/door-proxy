@@ -1,5 +1,7 @@
 # Door Controller Web App
 
+<img src="/public/favicon.png" width=150 />
+
 A small self-hosted web app to remotely trigger door unlocks through a property
 management portal, without needing to be connected to the building's home network.
 
