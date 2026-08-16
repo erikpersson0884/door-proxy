@@ -1,0 +1,18 @@
+services:
+  door-app:
+    container_name: door_app
+    ports:
+      - "3000:3000"
+    environment:
+      - UNLOCK_URL=${UNLOCK_URL}
+      - DOORS=${DOORS}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.doorapp.rule=Host(`door.erik-persson.com`)"
+      - "traefik.http.routers.doorapp.entrypoints=web"
+      - "traefik.http.services.doorapp.loadbalancer.server.port=3000"
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
