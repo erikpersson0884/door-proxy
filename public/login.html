@@ -1,49 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login — Door Control</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Door Control</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="Description" content="Door Controller Web App">
 </head>
 <body>
-  <div class="container">
-    <h1>🔒 Login</h1>
-    <form id="loginForm">
-      <input type="password" id="password" placeholder="Password" autofocus required
-             style="padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 80%; margin-bottom: 15px;" />
-      <br />
-      <button type="submit" class="btn-open">Log In</button>
-    </form>
-    <div id="status" style="color: #c0392b; margin-top: 10px;"></div>
-  </div>
+    <div class="container">
+        <h1>🔒 Login</h1>
+        <form id="loginForm">
+            <input type="password" id="password" placeholder="Password" autofocus required
+                style="padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 80%; margin-bottom: 15px;" />
+            <br />
+            <button type="submit" class="btn-open">Log In</button>
+        </form>
+        <div id="status" style="color: #c0392b; margin-top: 10px;"></div>
+    </div>
 
-  <script>
-    const form = document.getElementById("loginForm");
-    const status = document.getElementById("status");
+    <script>
+        const form = document.getElementById("loginForm");
+        const status = document.getElementById("status");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault(); // stops the native page reload
-      const password = document.getElementById("password").value;
-      status.textContent = "";
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault(); // stops the native page reload
+            const password = document.getElementById("password").value;
+            status.textContent = "";
 
-      try {
-        const r = await fetch("/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password }),
+            try {
+                const r = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password }),
+                });
+                const data = await r.json();
+
+                if (data.ok) {
+                    window.location.href = "/";
+                } else {
+                    status.textContent = "Wrong password";
+                }
+            } catch (err) {
+                status.textContent = "Something went wrong: " + err.message;
+            }
         });
-        const data = await r.json();
-
-        if (data.ok) {
-          window.location.href = "/";
-        } else {
-          status.textContent = "Wrong password";
-        }
-      } catch (err) {
-        status.textContent = "Something went wrong: " + err.message;
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>

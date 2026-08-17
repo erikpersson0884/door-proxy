@@ -31,7 +31,7 @@ app.use(session({
 // --- Auth middleware: blocks everything below unless logged in ---
 function requireAuth(req, res, next) {
   if (req.session && req.session.loggedIn) return next();
-  if (req.path === "/login" || req.path === "/login.html" || req.path==="/styles.css") return next();
+  if (req.path === "/login" || req.path === "/login.html" || req.path==="/styles.css" || req.path==="/favicon.png") return next();
   return res.redirect("/login.html");
 }
 
