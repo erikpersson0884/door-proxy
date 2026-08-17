@@ -30,9 +30,33 @@ app.use(session({
 
 // --- Auth middleware: blocks everything below unless logged in ---
 function requireAuth(req, res, next) {
-  const userIsLoggedIn = (req.session && req.session.loggedIn)
-  if (req.path ==="/" && !userIsLoggedIn) res.redirect("/login.html");
-  return next();
+  if (req.session?.loggedIn) {
+    return next();
+  }
+
+  // Public login resources
+  const publicPaths = [
+    "/login",
+    "/login.html",
+    "/styles.css",
+    "/favicon.png",
+    "/manifest.json"
+  ];
+
+  if (publicPaths.includes(req.path)) {
+    return next();
+  }
+
+  // Send browser requests to login
+  if (req.accepts("html")) {
+    return res.redirect("/login.html");
+  }
+
+  // API requests get 401 instead of HTML
+  return res.status(401).json({
+    ok: false,
+    error: "Not authenticated"
+  });
 }
 
 // Login page is public; everything else needs requireAuth
