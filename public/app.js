@@ -33,6 +33,7 @@ async function openDoor(doorId, btn) {
     if (data.ok) {
       btn.textContent = "✅ Opened!";
       btn.classList.add("success");
+      status.textContent = "Door opened successfully";
     } else {
       btn.textContent = "❌ Failed";
       btn.classList.add("error");
@@ -47,6 +48,7 @@ async function openDoor(doorId, btn) {
   setTimeout(() => {
     allButtons.forEach(b => (b.disabled = false));
     btn.textContent = originalText;
+    status.textContent = "";
     btn.classList.remove("success", "error");
   }, 4000);
 }

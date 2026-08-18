@@ -3,6 +3,8 @@ const session = require("express-session");
 const fetch = require("node-fetch");
 const path = require("path");
 const app = express();
+const dotenv = require("dotenv");
+dotenv.config();
 
 const ENVS = ["UNLOCK_URL", "DOORS", "APP_PASSWORD", "SESSION_SECRET", "NODE_ENV"];
 for (const env of ENVS) {
