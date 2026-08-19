@@ -1,10 +1,12 @@
 {
   "name": "Door Controller",
   "short_name": "Door Controller",
+  "description": "A web app for controlling doors",
+  "lang": "en-US",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#667eea",
-  "theme_color": "#764ba2",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/favicon.png",
