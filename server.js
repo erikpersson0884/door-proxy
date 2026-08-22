@@ -42,10 +42,18 @@ function requireAuth(req, res, next) {
     "/login.html",
     "/styles.css",
     "/favicon.png",
-    "/manifest.json"
+    "/manifest.json",
   ];
 
-  if (publicPaths.includes(req.path)) {
+    // Public path prefixes
+  const publicPrefixes = [
+    "/icons/",
+  ];
+
+  if (
+    publicPaths.includes(req.path) || 
+    publicPrefixes.some(prefix => req.path.startsWith(prefix))
+  ) {
     return next();
   }
 
