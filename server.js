@@ -1,14 +1,30 @@
 const express = require("express");
 const session = require("express-session");
 const fetch = require("node-fetch");
+const fs = require("node:fs");
 const path = require("path");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 
+const environment = process.env;
 const ENVS = ["UNLOCK_URL", "DOORS", "APP_PASSWORD", "SESSION_SECRET", "NODE_ENV"];
 for (const env of ENVS) {
-  if (!process.env[env]) {
+  // Try to load environment from file
+  const fileEnv = env + "_FILE";
+  const path = environment[fileEnv];
+  if (path) {
+    try {
+      const secret = fs.readFileSync(path);
+      environment[env] = secret;
+    } catch (err) {
+      console.error(err)
+      console.error(`Failed to read file for environment ${fileEnv}`);
+      process.exit(1);
+    }
+  }
+
+  if (!environment[env]) {
     console.error(`Missing required environment variable: ${env}`);
     process.exit(1);
   }
@@ -20,12 +36,12 @@ app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", 1);
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: environment.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-      secure: (process.env.NODE_ENV || "").toLowerCase() === "production",
+      secure: (environment.NODE_ENV || "").toLowerCase() === "production",
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
   },
 }));
@@ -69,7 +85,7 @@ app.get("/login.html", (req, res) => {
 app.post("/login", (req, res) => {
   console.log("login attempt", req.body);
   const { password } = req.body;
-  if (password === process.env.APP_PASSWORD) {
+  if (password === environment.APP_PASSWORD) {
     req.session.loggedIn = true;
     console.log("login success");
     return res.json({ ok: true });
@@ -85,7 +101,7 @@ app.use(requireAuth);
 app.use(express.static(path.join(__dirname, "public")));
 
 // Parse DOORS="Name One,Name Two" into { 1: "Name One", 2: "Name Two", ... }
-const DOORS = (process.env.DOORS || "")
+const DOORS = (environment.DOORS || "")
   .split(",")
   .map(name => name.trim())
   .filter(Boolean)
@@ -97,7 +113,7 @@ const DOORS = (process.env.DOORS || "")
 async function triggerUnlock(epName) {
   const body = new URLSearchParams({ epName });
 
-  const r = await fetch(process.env.UNLOCK_URL, {
+  const r = await fetch(environment.UNLOCK_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
