@@ -6,6 +6,8 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 
+const PORT = process.env.PORT || 3000;
+
 const ENVS = ["UNLOCK_URL", "DOORS", "APP_PASSWORD", "SESSION_SECRET", "NODE_ENV"];
 for (const env of ENVS) {
   if (!process.env[env]) {
@@ -75,13 +77,13 @@ app.get("/login.html", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("login attempt", req.body);
   const { password } = req.body;
   if (password === process.env.APP_PASSWORD) {
     req.session.loggedIn = true;
     console.log("login success");
     return res.json({ ok: true });
   }
+  console.log("Unsuccessfull login attempt. Password: ", req.body);
   return res.status(401).json({ ok: false, error: "Wrong password" });
 });
 
@@ -138,4 +140,12 @@ app.post("/trigger/:doorId", async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("door-app listening on :3000"));
+
+function link(text, url) {
+  return `\u001B]8;;${url}\u0007${text}\u001B]8;;\u0007`;
+}
+
+app.listen(PORT, () => {
+  const url = `http://localhost:${PORT}`;
+  console.log(`door-app listening on ${link(url, url)}`);
+});
