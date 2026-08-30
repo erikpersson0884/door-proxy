@@ -2,10 +2,11 @@ const buttonsContainer = document.getElementById("buttons");
 const status = document.getElementById("status");
 
 const btnClasses = ["btn-open", "btn-close"]; // cycles through your two color styles
+let doors = [];
 
 async function loadDoors() {
   const res = await fetch("/doors");
-  const doors = await res.json();
+  doors = await res.json();
 
   doors.forEach((door, index) => {
     const btn = document.createElement("button");
@@ -53,4 +54,11 @@ async function openDoor(doorId, btn) {
   }, 4000);
 }
 
-loadDoors();
+async function onLoad () {
+  await loadDoors();
+  doors.forEach((door, index) => {
+    fetch(`/trigger/${door.id}`, { method: "POST" });
+  })
+};
+
+onLoad();
