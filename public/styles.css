@@ -65,12 +65,14 @@ button.error {
 
 @media screen and (max-width: 600px) {
     .container {
-        width: fit-content;
+        box-sizing: border-box;
+        width: fit-conten;
+        max-width: 90%;
         padding: 40px 20px;
     }
 
     button {
-        width: 50%;
+        /* width: 50%; */
         padding: 12px 30px;
     }
 }
